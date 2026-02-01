@@ -2,10 +2,15 @@
 const ROOM_WIDTH_METERS = 6.0;
 const ROOM_HEIGHT_METERS = 6.0;
 const ANCHOR_NODES = [
-    { id: 'A', x: 1.0, y: 1.0, color: '#FF5722' },
-    { id: 'B', x: 5.0, y: 1.0, color: '#4CAF50' },
-    { id: 'C', x: 3.0, y: 5.0, color: '#9C27B0' }
+    { id: 'A', x: 0.0, y: 0.0, color: '#FF5722' },
+    { id: 'B', x: ROOM_WIDTH_METERS, y: 0.0, color: '#4CAF50' },
+    { id: 'C', x: 0.0, y: ROOM_HEIGHT_METERS, color: '#9C27B0' }
 ];
+// Distances from UE to anchors (meters)
+// You can manually change these values
+let dA = 3.5;
+let dB = 2.8;
+let dC = 4.2;
 
 // User Equipment (UE) starting state
 let ue = {
@@ -13,9 +18,6 @@ let ue = {
     y: 3.0,
     color: '#2196F3',
     radius: 10,
-    // Movement simulation variables
-    dx: 0.02,
-    dy: 0.03
 };
 
 // === SETUP ===
@@ -85,7 +87,10 @@ function draw() {
     drawNode(ue.x, ue.y, ue.color, 'UE');
 
     // 4. Update UI Text
-    coordsDisplay.textContent = `(${ue.x.toFixed(2)}, ${ue.y.toFixed(2)})`;
+coordsDisplay.innerHTML = `
+UE Position: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}) m<br>
+Distances: A=${dA} m, B=${dB} m, C=${dC} m
+`;
 }
 
 /**
@@ -93,23 +98,31 @@ function draw() {
  */
 function update() {
     // Move UE
-    ue.x += ue.dx;
-    ue.y += ue.dy;
+    //ue.x += ue.dx;
+    //ue.y += ue.dy;
 
     // Bounce off walls
-    if (ue.x <= 0 || ue.x >= ROOM_WIDTH_METERS) ue.dx *= -1;
-    if (ue.y <= 0 || ue.y >= ROOM_HEIGHT_METERS) ue.dy *= -1;
+    //if (ue.x <= 0 || ue.x >= ROOM_WIDTH_METERS) ue.dx *= -1;
+    //if (ue.y <= 0 || ue.y >= ROOM_HEIGHT_METERS) ue.dy *= -1;
 
     // Clamp values just in case
-    ue.x = Math.max(0, Math.min(ROOM_WIDTH_METERS, ue.x));
-    ue.y = Math.max(0, Math.min(ROOM_HEIGHT_METERS, ue.y));
+    //ue.x = Math.max(0, Math.min(ROOM_WIDTH_METERS, ue.x));
+    //ue.y = Math.max(0, Math.min(ROOM_HEIGHT_METERS, ue.y));
 
     draw();
-    requestAnimationFrame(update);
+    //requestAnimationFrame(update);
+}
+function trilaterate2D(d1, d2, d3, L) {
+    const x = (d1*d1 - d2*d2 + L*L) / (2 * L);
+    const y = (d1*d1 - d3*d3 + L*L) / (2 * L);
+    return { x, y };
 }
 
 // === START ===
 // Initial draw
+const uePos = trilaterate2D(dA, dB, dC, ROOM_WIDTH_METERS);
+ue.x = uePos.x;
+ue.y = uePos.y;
 draw();
 // Start animation loop
 update();
