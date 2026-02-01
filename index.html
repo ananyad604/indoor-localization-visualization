@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indoor Localization Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Indoor Localization Visualization</h1>
+        
+        <div class="canvas-container">
+            <canvas id="roomCanvas" width="600" height="600"></canvas>
+        </div>
+
+        <div class="info-panel">
+            <h2>Live Coordinates</h2>
+            <p>UE Position: <span id="ue-coords">(0.00, 0.00)</span> m</p>
+            <p>Room Size: 6m x 6m</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
