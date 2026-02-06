@@ -4,13 +4,13 @@
 let room = { w: 10, h: 10 };
 
 let anchors = [
-  { id: 'A', x: 0,  y: 0,  z: 0, color: '#ff5722', rssi: 0, d: 0 },
-  { id: 'B', x: 10, y: 0,  z: 0, color: '#4caf50', rssi: 0, d: 0 },
-  { id: 'C', x: 0,  y: 10, z: 0, color: '#9c27b0', rssi: 0, d: 0 }
+  { id: 'A', x: 0,  y: 0,  z: 0, color: '#ff5722', d: 0 },
+  { id: 'B', x: 10, y: 0,  z: 0, color: '#4caf50', d: 0 },
+  { id: 'C', x: 0,  y: 10, z: 0, color: '#9c27b0', d: 0 }
 ];
 
 let master = { x: 10, y: 10, z: 0 };
-let ue = { x: 5, y: 5, z: 0.3 };
+let ue     = { x: 5,  y: 5,  z: 0.3 };
 
 /***********************
  * CANVAS
@@ -20,29 +20,28 @@ const ctx = canvas.getContext("2d");
 const info = document.getElementById("ue-coords");
 
 const margin = 50;
-const zScale = 20;
 
 /***********************
- * ROOM → CANVAS MAPPING
+ * ROOM → CANVAS (XY ONLY)
  ***********************/
-function project(x, y, z) {
+function project(x, y) {
   const drawW = canvas.width  - 2 * margin;
   const drawH = canvas.height - 2 * margin;
 
-  const px = margin + (x / room.w) * drawW;
-  const py = margin + ((room.h - y) / room.h) * drawH - z * zScale;
-
-  return { x: px, y: py };
+  return {
+    x: margin + (x / room.w) * drawW,
+    y: margin + ((room.h - y) / room.h) * drawH
+  };
 }
 
 /***********************
  * DRAWING
  ***********************/
 function drawRoom() {
-  const p0 = project(0, 0, 0);
-  const p1 = project(room.w, 0, 0);
-  const p2 = project(room.w, room.h, 0);
-  const p3 = project(0, room.h, 0);
+  const p0 = project(0, 0);
+  const p1 = project(room.w, 0);
+  const p2 = project(room.w, room.h);
+  const p3 = project(0, room.h);
 
   ctx.strokeStyle = "#000";
   ctx.lineWidth = 2;
@@ -55,15 +54,19 @@ function drawRoom() {
   ctx.stroke();
 }
 
-function drawPoint(p, label, r, c) {
-  const s = project(p.x, p.y, p.z);
+function drawPoint(p, label, color, r = 9) {
+  const s = project(p.x, p.y);
+
   ctx.beginPath();
   ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-  ctx.fillStyle = c;
+  ctx.fillStyle = color;
   ctx.fill();
+  ctx.strokeStyle = "#222";
   ctx.stroke();
+
   ctx.fillStyle = "#000";
-  ctx.fillText(label, s.x + 6, s.y - 6);
+  ctx.font = "12px Arial";
+  ctx.fillText(`${label} (z=${p.z}m)`, s.x + 8, s.y - 8);
 }
 
 /***********************
@@ -71,21 +74,22 @@ function drawPoint(p, label, r, c) {
  ***********************/
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawRoom();
 
   anchors.forEach(a =>
-    drawPoint(a, `A${a.id}`, 10, a.color)
+    drawPoint(a, `A${a.id}`, a.color)
   );
 
-  drawPoint(master, "MASTER", 12, "#000");
-  drawPoint(ue, "UE", 10, "#2196f3");
+  drawPoint(master, "MASTER", "#000", 11);
+  drawPoint(ue, "UE", "#2196f3");
 
   info.innerHTML = `
-UE: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}, ${ue.z.toFixed(2)})<br>
-DIST: A=${anchors[0].d.toFixed(2)}
-      B=${anchors[1].d.toFixed(2)}
-      C=${anchors[2].d.toFixed(2)}<br>
-DIR from MASTER: ${bearing().toFixed(1)}°
+UE Position: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}, ${ue.z.toFixed(2)}) m<br>
+Distances: A=${anchors[0].d.toFixed(2)} 
+B=${anchors[1].d.toFixed(2)} 
+C=${anchors[2].d.toFixed(2)}<br>
+Direction from MASTER: ${bearing().toFixed(1)}°
 `;
 }
 
