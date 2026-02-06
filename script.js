@@ -1,3 +1,8 @@
+document.getElementById("serialBtn").onclick = connectSerial;
+let port, reader;
+let dA = 0, dB = 0, dC = 0;
+
+const textDecoder = new TextDecoder();
 // === CONFIGURATION ===
 const ROOM_WIDTH_METERS = 6.0;
 const ROOM_HEIGHT_METERS = 6.0;
@@ -92,6 +97,35 @@ UE Position: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}) m<br>
 Distances: A=${dA} m, B=${dB} m, C=${dC} m
 `;
 }
+async function connectSerial() {
+  port = await navigator.serial.requestPort();
+  await port.open({ baudRate: 115200 });
+
+  reader = port.readable.getReader();
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    const data = textDecoder.decode(value);
+    parseSerial(data);
+  }
+}
+function parseSerial(data) {
+  const lines = data.split("\n");
+  lines.forEach(line => {
+    line = line.trim();
+    if (line.startsWith("DIST")) {
+      const p = line.split(" ");
+      if (p.length === 4) {
+        dA = parseFloat(p[1]);
+        dB = parseFloat(p[2]);
+        dC = parseFloat(p[3]);
+        updatePosition();
+      }
+    }
+  });
+}
 
 /**
  * Simulation Loop - Moves the UE automatically
@@ -116,6 +150,12 @@ function trilaterate2D(d1, d2, d3, L) {
     const x = (d1*d1 - d2*d2 + L*L) / (2 * L);
     const y = (d1*d1 - d3*d3 + L*L) / (2 * L);
     return { x, y };
+}
+function updatePosition() {
+  const pos = trilaterate2D(dA, dB, dC);
+  ue.x = pos.x;
+  ue.y = pos.y;
+  draw();
 }
 
 // === START ===
