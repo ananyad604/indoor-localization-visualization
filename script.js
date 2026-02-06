@@ -1,155 +1,114 @@
-/*************************************************
- * SERIAL CONNECTION
- *************************************************/
-let port, reader;
-const textDecoder = new TextDecoder();
+/******************** STATE ********************/
+let room = { w: 6, h: 6 };
 
-document.getElementById("serialBtn")
-  .addEventListener("click", connectSerial);
-
-/*************************************************
- * CONFIGURATION
- *************************************************/
-const ROOM_WIDTH_METERS = 6.0;
-const ROOM_HEIGHT_METERS = 6.0;
-
-const ANCHOR_NODES = [
-  { id: 'A', x: 0.0, y: 0.0, color: '#FF5722' },
-  { id: 'B', x: ROOM_WIDTH_METERS, y: 0.0, color: '#4CAF50' },
-  { id: 'C', x: 0.0, y: ROOM_HEIGHT_METERS, color: '#9C27B0' }
+let anchors = [
+  { id: 'A', x: 0, y: 0, z: 0, color: '#ff5722' },
+  { id: 'B', x: 6, y: 0, z: 0, color: '#4caf50' },
+  { id: 'C', x: 0, y: 6, z: 0, color: '#9c27b0' }
 ];
 
-// Distances from Aggregator (meters)
-let dA = 0, dB = 0, dC = 0;
+let master = { x: 3, y: 3, z: 1.0 };
 
-// UE state
-let ue = {
-  x: 0.0,
-  y: 0.0,
-  color: '#2196F3',
-  radius: 10
-};
+let ue = { x: 0, y: 0, z: 0.3 };
 
-/*************************************************
- * CANVAS SETUP
- *************************************************/
-const canvas = document.getElementById('roomCanvas');
-const ctx = canvas.getContext('2d');
-const coordsDisplay = document.getElementById('ue-coords');
+let dist = { A: 0, B: 0, C: 0 };
 
-const SCALE_X = canvas.width / ROOM_WIDTH_METERS;
-const SCALE_Y = canvas.height / ROOM_HEIGHT_METERS;
+/******************** CANVAS ********************/
+const canvas = document.getElementById("roomCanvas");
+const ctx = canvas.getContext("2d");
+const info = document.getElementById("ue-coords");
 
-/*************************************************
- * HELPERS
- *************************************************/
-function toScreen(x, y) {
-  return {
-    px: x * SCALE_X,
-    py: y * SCALE_Y
-  };
+/******************** 3D → 2D PROJECTION ********************/
+function project3D(x, y, z) {
+  const isoX = (x - y) * 40 + canvas.width / 2;
+  const isoY = (x + y) * 20 - z * 40 + 100;
+  return { x: isoX, y: isoY };
 }
 
-function drawNode(x, y, color, label, isAnchor = false) {
-  const p = toScreen(x, y);
-
+/******************** DRAW ********************/
+function drawNode(obj, label, r, color) {
+  const p = project3D(obj.x, obj.y, obj.z);
   ctx.beginPath();
-  ctx.arc(p.px, p.py, isAnchor ? 15 : 10, 0, Math.PI * 2);
+  ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
   ctx.fillStyle = color;
   ctx.fill();
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
-
-  ctx.fillStyle = '#000';
-  ctx.font = 'bold 14px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(label, p.px, p.py + (isAnchor ? -25 : 25));
+  ctx.fillStyle = "#000";
+  ctx.fillText(label, p.x + 10, p.y);
 }
 
-/*************************************************
- * DRAW LOOP
- *************************************************/
-function draw() {
+function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ANCHOR_NODES.forEach(a =>
-    drawNode(a.x, a.y, a.color, `Anchor ${a.id}`, true)
+  anchors.forEach(a =>
+    drawNode(a, `A${a.id} z=${a.z}`, 10, a.color)
   );
 
-  drawNode(ue.x, ue.y, ue.color, 'UE');
+  drawNode(master, "MASTER", 12, "#000");
+  drawNode(ue, "UE", 10, "#2196f3");
 
-  coordsDisplay.innerHTML = `
-    UE Position: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}) m<br>
-    Distances: A=${dA.toFixed(2)} m,
-               B=${dB.toFixed(2)} m,
-               C=${dC.toFixed(2)} m
-  `;
+  info.innerText =
+    `UE: (${ue.x.toFixed(2)}, ${ue.y.toFixed(2)}, ${ue.z.toFixed(2)})`;
 }
 
-/*************************************************
- * TRILATERATION (2D)
- *************************************************/
-function trilaterate2D(d1, d2, d3, L) {
-  const x = (d1*d1 - d2*d2 + L*L) / (2 * L);
-  const y = (d1*d1 - d3*d3 + L*L) / (2 * L);
-  return { x, y };
+/******************** MATH ********************/
+function trilaterate2D() {
+  const L = room.w;
+  const x = (dist.A**2 - dist.B**2 + L**2) / (2 * L);
+  const y = (dist.A**2 - dist.C**2 + L**2) / (2 * L);
+
+  ue.x = clamp(x, 0, room.w);
+  ue.y = clamp(y, 0, room.h);
 }
 
-function updatePosition() {
-  if (dA <= 0 || dB <= 0 || dC <= 0) return;
-
-  const pos = trilaterate2D(dA, dB, dC, ROOM_WIDTH_METERS);
-
-  ue.x = Math.max(0, Math.min(ROOM_WIDTH_METERS, pos.x));
-  ue.y = Math.max(0, Math.min(ROOM_HEIGHT_METERS, pos.y));
-
-  draw();
+function clamp(v, a, b) {
+  return Math.max(a, Math.min(b, v));
 }
 
-/*************************************************
- * SERIAL COMMUNICATION
- *************************************************/
-async function connectSerial() {
-  try {
-    port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 115200 });
+/******************** SERIAL ********************/
+let port, reader;
+const decoder = new TextDecoder();
 
-    reader = port.readable.getReader();
-    console.log("Serial connected");
+document.getElementById("serialBtn").onclick = async () => {
+  port = await navigator.serial.requestPort();
+  await port.open({ baudRate: 115200 });
+  reader = port.readable.getReader();
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-
-      const data = textDecoder.decode(value);
-      parseSerial(data);
-    }
-  } catch (err) {
-    console.error("Serial error:", err);
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    parseSerial(decoder.decode(value));
   }
-}
+};
 
 function parseSerial(data) {
-  const lines = data.split("\n");
-
-  lines.forEach(line => {
-    line = line.trim();
+  data.split("\n").forEach(line => {
     if (line.startsWith("DIST")) {
-      const p = line.split(" ");
-      if (p.length === 4) {
-        dA = parseFloat(p[1]);
-        dB = parseFloat(p[2]);
-        dC = parseFloat(p[3]);
-        updatePosition();
-      }
+      const p = line.trim().split(" ");
+      dist.A = +p[1];
+      dist.B = +p[2];
+      dist.C = +p[3];
+      trilaterate2D();
+      render();
     }
   });
 }
 
-/*************************************************
- * START
- *************************************************/
-draw();
+/******************** APPLY CONFIG ********************/
+document.getElementById("applyConfig").onclick = () => {
+  room.w = +roomWidth.value;
+  room.h = +roomHeight.value;
+  ue.z = +uez.value;
+
+  anchors[0].x = +ax.value; anchors[0].y = +ay.value; anchors[0].z = +az.value;
+  anchors[1].x = +bx.value; anchors[1].y = +by.value; anchors[1].z = +bz.value;
+  anchors[2].x = +cx.value; anchors[2].y = +cy.value; anchors[2].z = +cz.value;
+
+  master.x = +mx.value;
+  master.y = +my.value;
+  master.z = +mz.value;
+
+  render();
+};
+
+/******************** START ********************/
+render();
