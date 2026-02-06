@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Indoor Localization – 3D View</title>
+  <meta charset="UTF-8" />
+  <title>Indoor Localization – 3D Visualization</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="container">
 
+<div class="container">
   <h1>Indoor Localization – 3D Visualization</h1>
 
-  <div class="config-panel">
-
+  <div class="config">
     <h3>Room</h3>
-    Width <input id="roomWidth" value="6"> 
-    Height <input id="roomHeight" value="6">
+    Width <input id="roomWidth" value="10">
+    Height <input id="roomHeight" value="10">
 
     <h3>Anchors (x y z)</h3>
     A <input id="ax" value="0"> <input id="ay" value="0"> <input id="az" value="0"><br>
-    B <input id="bx" value="6"> <input id="by" value="0"> <input id="bz" value="0"><br>
-    C <input id="cx" value="0"> <input id="cy" value="6"> <input id="cz" value="0">
+    B <input id="bx" value="8"> <input id="by" value="0"> <input id="bz" value="0"><br>
+    C <input id="cx" value="0"> <input id="cy" value="8"> <input id="cz" value="0">
 
-    <h3>Aggregator / Master Node (x y z)</h3>
-    <input id="mx" value="3"> 
-    <input id="my" value="3"> 
-    <input id="mz" value="1.0">
+    <h3>Aggregator / Master (x y z)</h3>
+    <input id="mx" value="5"> <input id="my" value="1"> <input id="mz" value="1.0">
 
     <h3>UE Height (z)</h3>
     <input id="uez" value="0.3">
@@ -34,15 +30,13 @@
     <button id="applyConfig">Apply</button>
   </div>
 
-  <div class="canvas-container">
-    <button id="serialBtn">Connect Aggregator</button>
-    <canvas id="roomCanvas" width="700" height="500"></canvas>
-  </div>
+  <button id="serialBtn" class="green">Connect Aggregator</button>
 
-  <div class="info-panel">
-    <p id="ue-coords">UE: (0,0,0)</p>
-  </div>
+  <canvas id="roomCanvas" width="800" height="600"></canvas>
 
+  <div class="info">
+    <div id="ue-coords">Waiting for data…</div>
+  </div>
 </div>
 
 <script src="script.js"></script>
