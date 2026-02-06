@@ -14,6 +14,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 900px;
 }
 
 h1 {
@@ -21,21 +22,80 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
+/* ================= CONFIG PANEL ================= */
+.config-panel {
+    background-color: #f7f9fc;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.config-panel h3 {
+    margin: 0.8rem 0 0.4rem;
+    color: #333;
+}
+
+.config-panel input {
+    width: 70px;
+    padding: 4px;
+    margin: 4px 6px 4px 0;
+    border-radius: 5px;
+    border: 1px solid #bbb;
+}
+
+.config-panel button {
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    background-color: #2196F3;
+    color: white;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.config-panel button:hover {
+    background-color: #1976d2;
+}
+
+/* ================= CANVAS ================= */
 .canvas-container {
     margin: 0 auto;
     border: 2px solid #333;
     display: inline-block;
     background-color: #fff;
+    position: relative;
+}
+
+#serialBtn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#serialBtn:hover {
+    background-color: #388e3c;
 }
 
 #roomCanvas {
     background-color: #fafafa;
-    /* Grid pattern for the floor */
-    background-image: linear-gradient(#e5e7eb 1px, transparent 1px),
-                      linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+    background-image:
+        linear-gradient(#e5e7eb 1px, transparent 1px),
+        linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
     background-size: 50px 50px;
 }
 
+/* ================= INFO PANEL ================= */
 .info-panel {
     margin-top: 1.5rem;
     padding: 1rem;
@@ -44,7 +104,8 @@ h1 {
     border-left: 5px solid #2196F3;
 }
 
-.info-panel h2 {
+.info-panel h2,
+.info-panel h3 {
     margin: 0 0 0.5rem 0;
     font-size: 1.2rem;
     color: #0d47a1;
@@ -52,6 +113,6 @@ h1 {
 
 .info-panel p {
     margin: 0.25rem 0;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-family: monospace;
 }
