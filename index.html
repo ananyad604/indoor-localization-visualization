@@ -2,43 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Indoor Localization – 3D Visualization</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Indoor Localization – 2D</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <div class="container">
+    <h1>Indoor Localization – 2D Visualization</h1>
 
-<div class="container">
-  <h1>Indoor Localization – 3D Visualization</h1>
+    <!-- CONFIG -->
+    <div class="config">
+      <b>Room</b><br>
+      Width <input id="roomW" value="10">
+      Height <input id="roomH" value="10"><br><br>
 
-  <div class="config">
-    <h3>Room</h3>
-    Width <input id="roomWidth" value="10">
-    Height <input id="roomHeight" value="10">
+      <b>Anchors (x , y)</b><br>
+      A <input id="ax" value="0"> <input id="ay" value="0"><br>
+      B <input id="bx" value="10"> <input id="by" value="0"><br>
+      C <input id="cx" value="0"> <input id="cy" value="10"><br><br>
 
-    <h3>Anchors (x y z)</h3>
-    A <input id="ax" value="0"> <input id="ay" value="0"> <input id="az" value="0"><br>
-    B <input id="bx" value="8"> <input id="by" value="0"> <input id="bz" value="0"><br>
-    C <input id="cx" value="0"> <input id="cy" value="8"> <input id="cz" value="0">
+      <b>Master (x , y)</b><br>
+      <input id="mx" value="10"> <input id="my" value="10"><br><br>
 
-    <h3>Aggregator / Master (x y z)</h3>
-    <input id="mx" value="5"> <input id="my" value="1"> <input id="mz" value="1.0">
+      <button id="apply">Apply</button>
+    </div>
 
-    <h3>UE Height (z)</h3>
-    <input id="uez" value="0.3">
+    <button class="green" id="serialBtn">Connect Aggregator</button>
 
-    <br><br>
-    <button id="applyConfig">Apply</button>
+    <canvas id="roomCanvas" width="700" height="700"></canvas>
+
+    <div class="info" id="ue-coords">
+      Waiting for data…
+    </div>
   </div>
 
-  <button id="serialBtn" class="green">Connect Aggregator</button>
-
-  <canvas id="roomCanvas" width="800" height="600"></canvas>
-
-  <div class="info">
-    <div id="ue-coords">Waiting for data…</div>
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
