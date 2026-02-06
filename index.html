@@ -2,51 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Indoor Localization Demo (3D)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indoor Localization – 3D View</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 <div class="container">
 
-  <h1>Indoor Localization Visualization (3D)</h1>
+  <h1>Indoor Localization – 3D Visualization</h1>
 
-  <!-- CONFIG PANEL -->
   <div class="config-panel">
-    <h3>Room Configuration</h3>
-    Width (m): <input id="roomWidth" type="number" value="6" step="0.1">
-    Height (m): <input id="roomHeight" type="number" value="6" step="0.1">
 
-    <h3>Anchor Positions (x, y, z)</h3>
+    <h3>Room</h3>
+    Width <input id="roomWidth" value="6"> 
+    Height <input id="roomHeight" value="6">
 
-    <b>Anchor A</b><br>
-    <input id="ax" value="0"> <input id="ay" value="0"> <input id="az" value="0"><br>
+    <h3>Anchors (x y z)</h3>
+    A <input id="ax" value="0"> <input id="ay" value="0"> <input id="az" value="0"><br>
+    B <input id="bx" value="6"> <input id="by" value="0"> <input id="bz" value="0"><br>
+    C <input id="cx" value="0"> <input id="cy" value="6"> <input id="cz" value="0">
 
-    <b>Anchor B</b><br>
-    <input id="bx" value="6"> <input id="by" value="0"> <input id="bz" value="0"><br>
-
-    <b>Anchor C</b><br>
-    <input id="cx" value="0"> <input id="cy" value="6"> <input id="cz" value="0"><br>
+    <h3>Aggregator / Master Node (x y z)</h3>
+    <input id="mx" value="3"> 
+    <input id="my" value="3"> 
+    <input id="mz" value="1.0">
 
     <h3>UE Height (z)</h3>
-    <input id="uez" type="number" value="0.3" step="0.05">
+    <input id="uez" value="0.3">
 
     <br><br>
-    <button id="applyConfig">Apply Configuration</button>
+    <button id="applyConfig">Apply</button>
   </div>
 
-  <!-- CANVAS -->
   <div class="canvas-container">
     <button id="serialBtn">Connect Aggregator</button>
-    <canvas id="roomCanvas" width="600" height="600"></canvas>
+    <canvas id="roomCanvas" width="700" height="500"></canvas>
   </div>
 
-  <!-- INFO -->
   <div class="info-panel">
-    <h3>Live Output</h3>
-    <p id="ue-coords">UE Position: (0.00, 0.00, 0.30)</p>
-    <p id="distances">Distances: A=0 B=0 C=0</p>
+    <p id="ue-coords">UE: (0,0,0)</p>
   </div>
 
 </div>
@@ -54,4 +48,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
