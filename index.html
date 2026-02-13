@@ -1,41 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Indoor Localization – 2D</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indoor Localization Demo</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="container">
-    <h1>Indoor Localization – 2D Visualization</h1>
+    <div class="container">
+        <h1>Indoor Localization Visualization</h1>
+        
+        <div class="canvas-container">
+            <canvas id="roomCanvas" width="600" height="600"></canvas>
+        </div>
 
-    <!-- CONFIG -->
-    <div class="config">
-      <b>Room</b><br>
-      Width <input id="roomW" value="10">
-      Height <input id="roomH" value="10"><br><br>
-
-      <b>Anchors (x , y)</b><br>
-      A <input id="ax" value="0"> <input id="ay" value="0"><br>
-      B <input id="bx" value="10"> <input id="by" value="0"><br>
-      C <input id="cx" value="0"> <input id="cy" value="10"><br><br>
-
-      <b>Master (x , y)</b><br>
-      <input id="mx" value="10"> <input id="my" value="10"><br><br>
-
-      <button id="apply">Apply</button>
+        <div class="info-panel">
+            <h2>Live Coordinates</h2>
+            <p>UE Position: <span id="ue-coords">(0.00, 0.00)</span> m</p>
+            <p>Room Size: 6m x 6m</p>
+        </div>
     </div>
 
-    <button class="green" id="serialBtn">Connect Aggregator</button>
-
-    <canvas id="roomCanvas" width="700" height="700"></canvas>
-
-    <div class="info" id="ue-coords">
-      Waiting for data…
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
