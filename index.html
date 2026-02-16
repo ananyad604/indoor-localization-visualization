@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indoor Localization Demo</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Indoor Localization Visualization</h1>
-        
-        <div class="canvas-container">
-            <canvas id="roomCanvas" width="600" height="600"></canvas>
-        </div>
 
-        <div class="info-panel">
-            <h2>Live Coordinates</h2>
-            <p>UE Position: <span id="ue-coords">(0.00, 0.00)</span> m</p>
-            <p>Room Size: 6m x 6m</p>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Indoor Localization – 2D</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Indoor Localization – 2D Visualization</h1>
+
+    <!-- CONFIG -->
+    <div class="config">
+      <b>Room</b><br>
+      Width <input id="roomW" value="10">
+      Height <input id="roomH" value="10"> Depth <input id="roomD" value="10"><br><br>
+
+      <b>Anchors (x , y , z)</b><br>
+      A <input id="ax" value="0"> <input id="ay" value="0"> <input id="az" value="0"><br>
+      B <input id="bx" value="10"> <input id="by" value="0"> <input id="bz" value="10"><br>
+      C <input id="cx" value="0"> <input id="cy" value="10"> <input id="bz" value="10"><br>
+      D <input id="dx" value="10"> <input id="dy" value="10"> <input id="dz" value="0"><br><br>
+
+      <b>Master (x , y , z)</b><br>
+      <input id="mx" value="5"> <input id="my" value="0"> <input id="mz" value="0"><br><br>
+
+      <button id="apply">Apply</button>
     </div>
 
-    <script src="script.js"></script>
+    <button class="green" id="serialBtn">Connect Aggregator</button>
+    <button class="blue" id="simBtn" style="background-color: #2196f3; color: white;">Simulate Movement</button>
+
+    <div id="roomContainer" style="width: 700px; height: 700px; border: 1px solid #ccc; background: #eee;"></div>
+
+    <div class="info" id="ue-coords">
+      Waiting for data…
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
+
 </html>
