@@ -1,57 +1,59 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
+  margin: 0;
+  background: #f4f6f8;
+  font-family: Arial, sans-serif;
 }
 
 .container {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
 }
 
 h1 {
-    color: #333;
-    margin-bottom: 1.5rem;
+  text-align: center;
 }
 
-.canvas-container {
-    margin: 0 auto;
-    border: 2px solid #333;
-    display: inline-block;
-    background-color: #fff;
+.config {
+  background: #eef3f7;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
-#roomCanvas {
-    background-color: #fafafa;
-    /* Grid pattern for the floor */
-    background-image: linear-gradient(#e5e7eb 1px, transparent 1px),
-                      linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-    background-size: 50px 50px;
+.config input {
+  width: 50px;
+  margin: 2px;
 }
 
-.info-panel {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background-color: #e8f4fd;
-    border-radius: 8px;
-    border-left: 5px solid #2196F3;
+button {
+  padding: 6px 12px;
+  margin-top: 8px;
+  cursor: pointer;
 }
 
-.info-panel h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.2rem;
-    color: #0d47a1;
+.green {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
 }
 
-.info-panel p {
-    margin: 0.25rem 0;
-    font-size: 1.1rem;
-    font-family: monospace;
+canvas {
+  margin-top: 15px;
+  border: 2px solid #333;
+  background:
+    linear-gradient(#ddd 1px, transparent 1px),
+    linear-gradient(90deg, #ddd 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.info {
+  margin-top: 10px;
+  padding: 10px;
+  background: #e8f4fd;
+  border-left: 5px solid #2196f3;
+  font-family: monospace;
 }
